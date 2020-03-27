@@ -49,22 +49,27 @@ with open("test.txt", "w") as output:
     output.write(str(phrases_token))
     
 # Entraînement d'une matrice TF-IDF
-from sklearn.feature_extraction.text import TfidfVectorizer
 from stop_words import get_stop_words
 stop_words = get_stop_words('french')
 
+from sklearn.feature_extraction.text import TfidfVectorizer
 TfidfVec = TfidfVectorizer(stop_words = stop_words)
 tfidf = TfidfVec.fit(phrases_token)
+
 # on crée la matrice TF-IDF sur le texte de la page wiki
 phrases_tf = tfidf.transform(phrases_token)
     
-# on définit la fonction qu'on appellera dans le chatbot : elle renvoie 
 # la phrase la plus proche de celle posée par l'utilisateur
 from sklearn.metrics.pairwise import cosine_similarity
 
+# on définit la fonction qu'on appellera dans le chatbot : elle renvoie 
+from sklearn import pipeline
+
 def reponse_wiki(phrase_user):
-    # on a besoin d epasser la chaîne de caractère dans une liste :
+    # on a besoin de passer la chaîne de caractère dans une liste :
     phrase_user = [phrase_user]
+    
+    
     # On calcule les valuers TF-IDF pour la phrase de l'utilisateur
     user_tf = tfidf.transform(phrase_user)
     # on calcule la similarité entre la question posée par l'utilisateur
