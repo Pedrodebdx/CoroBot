@@ -23,13 +23,13 @@ def nettoyage(texte):
     texte = texte.replace('n.c.a.', 'non-consommateur absolu')
     texte = texte.replace('covid-19', 'coronavirus')
     texte = re.sub('\n', ' ', texte)
-    texte = re.sub('A/ ', '', texte)
-    texte = re.sub('B/ ', '', texte)
-    texte = re.sub('C/ ', '', texte)
-    texte = re.sub('a/ ', '', texte)
-    texte = re.sub('b/ ', '', texte)
-    texte = re.sub('c/ ', '', texte)
-    texte = re.sub('d/ ', '', texte)
+    texte = re.sub('A\/ ', '', texte)
+    texte = re.sub('B\/ ', '', texte)
+    texte = re.sub('C\/ ', '', texte)
+    texte = re.sub('a\/ ', '', texte)
+    texte = re.sub('b\/ ', '', texte)
+    texte = re.sub('c\/ ', '', texte)
+    texte = re.sub('d\/ ', '', texte)
     return texte
     
 texte = nettoyage(texte)
@@ -40,7 +40,10 @@ texte = nettoyage(texte)
 phrases_token = nltk.sent_tokenize(texte)
 
 
-for p in reversed(range(len(phrases_token))) :
-    if phrases_token[p][-1] == " ?":
-        del phrases_token[p]
-        
+for i in reversed(range(len(phrases_token))) :
+    if phrases_token[i][-1] == " ?":
+        del phrases_token[i]
+
+with open("test.txt", "w") as output:
+    output.write(str(phrases_token))
+    
