@@ -82,6 +82,8 @@ def reponse_wiki(phrase_user):
         robo_response = phrases_token[index_max_sim]
     return robo_response
 
+bonjour = ('.onjour|.jr|.alut|.lt')
+aurevoir = ('.[aà].?plus|.[aà].?bientot|.[aà].?bientôt|.u revoir')
 
 #define app routes
 @app.route("/")
@@ -93,8 +95,12 @@ def get_bot_response():
 
     phrase_user = request.args.get('msg')
     phrase_user = phrase_user.lower()
-    if (phrase_user == "quit"):
+    if (re.fullmatch(aurevoir,phrase_user)):
         return "Pensez à appliquer les gestes barrières! Et restez-chez-vous"
+    
+    elif (re.fullmatch(bonjour,phrase_user)):
+        return 'Bonjour en quoi puis-je vous aider ?'
+        
     else:
         return reponse_wiki(phrase_user)
     
