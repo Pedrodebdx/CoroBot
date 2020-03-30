@@ -1,53 +1,56 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Mar 27 09:03:27 2020
-
 @author: Pierre
-
 Corobot
 """
 # import des librairies
 import nltk
 import numpy as np
 import random
-import string # to process standard python strings
+import string 
 import re
 
 #import du texte
 texte = open('infos_corona.txt',  mode = 'r', encoding='utf-8')
 texte = texte.read()
 
-# nettoyage
-def nettoyage(texte):
-    texte = texte.lower()
-    texte = texte.replace('n.c.a.', 'non-consommateur absolu')
-    texte = texte.replace('covid-19', 'coronavirus')
-    texte = re.sub('\n', ' ', texte)
-    texte = re.sub('A\/ ', '', texte)
-    texte = re.sub('B\/ ', '', texte)
-    texte = re.sub('C\/ ', '', texte)
-    texte = re.sub('a\/ ', '', texte)
-    texte = re.sub('b\/ ', '', texte)
-    texte = re.sub('c\/ ', '', texte)
-    texte = re.sub('d\/ ', '', texte)
-    return texte
-    
-texte = nettoyage(texte)
 
 # tokenization -> Création d'une liste de phrases
 # nltk.download('punkt') # first-time use only
 # nltk.download('wordnet') # first-time use only (pour l'anglais)
 phrases_token = nltk.sent_tokenize(texte)
 
-
 for i in reversed(range(len(phrases_token))) :
-    if phrases_token[i][-1] == ' ?':
+    if phrases_token[i][-1] == '?':
         del phrases_token[i]
+        
+# on enlève les doublons
+phrases_token = list(set(phrases_token)) 
 
-#pour test, sauvegarde du fichier en texte
-with open("test.txt", "w") as output:
-    output.write(str(phrases_token))
-    
+# nettoyage
+def nettoyage(phrases_token):
+    phrases_token = phrases_token.lower()
+    phrases_token = phrases_token.replace('n.c.a.', 'non-consommateur absolu')
+    phrases_token = phrases_token.replace('covid-19', 'coronavirus')
+    phrases_token = re.sub('[éèê]', 'e', phrases_token)
+    phrases_token = re.sub('[àâ]', 'a', phrases_token)
+    phrases_token = re.sub('[ô]', 'o', phrases_token)
+    phrases_token = re.sub('\n', ' ', phrases_token)
+    phrases_token = re.sub('A\/ ', '', phrases_token)
+    phrases_token = re.sub('B\/ ', '', phrases_token)
+    phrases_token = re.sub('C\/ ', '', phrases_token)
+    phrases_token = re.sub('a\/ ', '', phrases_token)
+    phrases_token = re.sub('b\/ ', '', phrases_token)
+    phrases_token = re.sub('c\/ ', '', phrases_token)
+    phrases_token = re.sub('d\/ ', '', phrases_token)
+    return phrases_token
+ 
+# on applique la fonciton de nettoyage
+phrases_token_propres = []
+for i in range(len(phrases_token)):
+    phrases_token_propres.append(nettoyage(phrases_token[i]))
+  
 # Entraînement d'une matrice TF-IDF
 from stop_words import get_stop_words
 stop_words = get_stop_words('french')
@@ -61,9 +64,6 @@ phrases_tf = tfidf.transform(phrases_token)
     
 # la phrase la plus proche de celle posée par l'utilisateur
 from sklearn.metrics.pairwise import cosine_similarity
-
-# on définit la fonction qu'on appellera dans le chatbot : elle renvoie 
-from sklearn import pipeline
 
 def reponse_wiki(phrase_user):
     # on a besoin de passer la chaîne de caractère dans une liste :
