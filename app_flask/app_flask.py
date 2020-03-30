@@ -108,4 +108,4 @@ if __name__ == "__main__":
     app.run()
 
 
-# source flask https://codinginfinite.com/chatbot-in-python-flask-tutorial/
+# source pour ma structure flask https://codinginfinite.com/chatbot-in-python-flask-tutorial/
